@@ -1,0 +1,8 @@
+* Hashed passwords 
+** https://github.com/jpillora/hashedpassword
+** https://github.com/elithrar/simple-scrypt
+** https://godoc.org/golang.org/x/crypto/bcrypt
+*** Do it in s5?
+
+* Fix the seven5 buildpack on Heroku to do the build of the client side assets and code
+** Remove all the commited "outputs" from the github repo (source)

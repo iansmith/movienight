@@ -1,0 +1,13 @@
+{{define "HEADER"}}
+<div class="row">
+	<div class="col-sm-offset-3 col-sm-3">
+	Movie Night!
+	</div>
+	<div class="col-sm-3">
+	{{if .toprightText}}
+	<A HREF="{{.toprightTarget}}">{{.toprightText}}</A>
+	{{end}}
+	</div>
+</div> <!--title row-->
+
+{{end}}

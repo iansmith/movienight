@@ -1,0 +1,13 @@
+#might neeed to adjust movienight.src to where you do your dev
+export GOPATH=~/movienight.src
+export PATH=~/movienight.src/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+## five four three THREE
+export DATABASE_URL=postgres://postgres@localhost:5433/selma?sslmode=disable
+
+export GO_GIT_DESCRIBE_SYMBOL=main.version
+export SERVER_SESSION_KEY="3870353657345634326b39683578364b"
+export PORT=5001
+
+##forces test mode for dev
+export MOVIENIGHT_TEST=true
