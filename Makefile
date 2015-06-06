@@ -15,8 +15,9 @@ build:
 	godep go install  -ldflags '-X $(GO_GIT_DESCRIBE_SYMBOL) $(SHA)' github.com/iansmith/movienight/server
 	godep go install github.com/iansmith/movienight/migrate
 	godep go install github.com/iansmith/movienight/tooling/pagegen
+	godep go install github.com/iansmith/movienight/tooling/create_acct
 
 .PHONY: godeps
 godeps:
 	rm -rf Godeps
-	godep save ./...
+	godep save ./server/...

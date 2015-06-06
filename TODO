@@ -6,3 +6,9 @@
 
 * Fix the seven5 buildpack on Heroku to do the build of the client side assets and code
 ** Remove all the commited "outputs" from the github repo (source)
+
+* Sign up page
+** So you don't have to do create_acct for every person, maybe filter on email suffix?
+
+* Password reset cruft
+

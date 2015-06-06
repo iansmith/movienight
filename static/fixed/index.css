@@ -1,0 +1,10 @@
+div.vert-space {
+	padding-top:20px
+}
+
+div.vcenter {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items:center;
+  align-items:center;
+}

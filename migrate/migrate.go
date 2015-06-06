@@ -56,8 +56,10 @@ func oneUp(tx *sql.Tx) error {
         CREATE TABLE movie (
        	id BIGINT PRIMARY KEY,
         title VARCHAR(255),
-        imdb_id VARCHAR(63),
-        poster_url VARCHAR(1023)
+        imdb_url VARCHAR(1023),
+        poster_url VARCHAR(1023),
+        blurb TEXT,
+        nominated_by VARCHAR(36) REFERENCES user_record(user_udid)
         )`)
 	if err != nil {
 		return err
@@ -89,6 +91,7 @@ func oneUp(tx *sql.Tx) error {
 	//
 	// COMMENT
 	//
+
 	_, err = tx.Exec(`
         CREATE TABLE comment (
        	id BIGINT PRIMARY KEY,
@@ -107,11 +110,11 @@ func oneUp(tx *sql.Tx) error {
 func oneDown(tx *sql.Tx) error {
 	//bc of foreign keys, order of these drops is siginficant
 	drops := []string{
-		"DROP TABLE user_record",
-		"DROP TABLE movie",
 		"DROP TABLE love",
 		"DROP TABLE hate",
 		"DROP TABLE comment",
+		"DROP TABLE movie",
+		"DROP TABLE user_record",
 	}
 	for _, drop := range drops {
 		_, err := tx.Exec(drop)

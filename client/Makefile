@@ -6,27 +6,43 @@
 ##
 ## This file must be run from within the client directory.
 ##
+## This file may have other unknown dependency flaws. YMMV.
 
-all: ../static/en/web/index.js \
-	../static/en/web/index.html
+all: \
+	../static/en/web/index.js \
+	../static/en/web/index.html \
+	../static/en/web/login.js \
+	../static/en/web/login.html
 
 clean:
 	rm -rf \
+	../../../../../pkg/darwin_js_min/ \
+	../../../../../pkg/linux_js_min/ \
 	../static/en/web/index.js* \
-	../static/en/web/index.html
+	../static/en/web/index.html \
+	../static/en/web/login.js* \
+	../static/en/web/login.html
 
 ### extra go files throw into to the dependencies, it compiles too fast to bother
 ### trying to make this exact
 ### WARNING: for deployment reasons, we don't list the "true" dependency on 
 ### WARNING: on seven5/seven5/client here. That will break build on heroku.
-extras=../shared/*.go ../wire/*.go 
+extras=../shared/*.go ../wire/*.go uilib/*.go
 
 
 GOPHERJS:=gopherjs
 GOPHERJSOPTS:=-m
 
+#
+# There, sadly, is no godep <cmd> so we have jury-rig this via the godep "path" command. Sigh.
+#
+WITHDEPS:=$(shell cd ..; godep path)
+
 ../static/en/web/index.js: pages/index.go $(extras)
-	$(GOPHERJS) build $(GOPHERJSOPTS) --output=../static/en/web/index.js pages/index.go
+	GOPATH=$(GOPATH):$(WITHDEPS) $(GOPHERJS) build $(GOPHERJSOPTS) --output=../static/en/web/index.js pages/index.go
+
+../static/en/web/login.js: pages/login.go $(extras)
+	GOPATH=$(GOPATH):$(WITHDEPS) $(GOPHERJS) build $(GOPHERJSOPTS) --output=../static/en/web/login.js pages/login.go
 
 
 ##
@@ -37,3 +53,6 @@ GOPHERJSOPTS:=-m
 ##
 ../static/en/web/index.html: template/index.html template/index.json template/support/*
 	pagegen --support=support --dir=template --start=index.html --json=index.json > ../static/en/web/index.html
+
+../static/en/web/login.html: template/login.html template/login.json template/support/*
+	pagegen --support=support --dir=template --start=login.html --json=login.json > ../static/en/web/login.html

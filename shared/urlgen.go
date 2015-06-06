@@ -3,6 +3,7 @@ package shared
 type URLGenerator interface {
 	Me() string
 	Auth() string
+	Home() string
 }
 
 type urlGenImpl struct {
@@ -16,6 +17,10 @@ func init() {
 
 func (u *urlGenImpl) Me() string {
 	return "/me"
+}
+
+func (u *urlGenImpl) Home() string {
+	return "/"
 }
 
 func (u *urlGenImpl) Auth() string {

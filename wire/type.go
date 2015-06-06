@@ -14,16 +14,19 @@ type UserRecord struct {
 }
 
 type Movie struct {
-	Id        int64 `qbs:"pk"`
-	Title     string
-	ImdbId    string
-	PosterUrl string
+	Id          int64 `qbs:"pk"`
+	Title       string
+	ImdbUrl     string
+	Blurb       string
+	NominatedBy string `qbs:"fk:Nominator"`
+	Nominator   *UserRecord
+	PosterUrl   string
 }
 
 type Love struct {
-	Id       int64  `qbs:"pk"`
-	MovieId  int64  `qbs:"fk:Movie"`
-	UserUdid string `qbs:"fk:User"`
+	Id       int64 `qbs:"pk"`
+	MovieId  int64 `qbs:"fk:Movie"`
+	UserUdid string
 	Movie    *Movie
 	User     *UserRecord
 }

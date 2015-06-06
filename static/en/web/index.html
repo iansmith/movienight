@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Movienight</title>
+	
+	<title>Movie Night</title>
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.4/flatly/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/templates/pace-theme-center-circle.tmpl.css" rel="stylesheet" />
+	<link href="/fixed/index.css" rel="stylesheet"/>
+
 </head>
 <body>
 
 <div class="container">
 
-<div class="row">
-	<div class="col-sm-offset-3 col-sm-3">
-	Movie Night!
+
+<div class="row vcenter">
+	<div class="col-md-offset-3 col-md-6" style="text-align:center">
+  <h1>Movie Night!<h1>
 	</div>
-	<div class="col-sm-3">
+	<div class="col-md-3">
 	
-	<A HREF="login.html">Log In</A>
+	<A CLASS="h4" HREF="login.html">Log In &raquo;</A>
 	
 	</div>
 </div> <!--title row-->
 
 
 
+
+  <div id="feedback-row" 
+      class="row vert-space ">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8"  id="feedback-col" style="text-align:center;">
+            <button id="err-closer" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          
+          <span class="h4"  id="feedback-text" 
+          style="font-variant:small-caps"></span>
+        </div>
+      </div> <!--row-->
+
+
+
 </div> <!--outer container-->
+
+
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="index.js"></script>
+
+
 </body>
 </html>

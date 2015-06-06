@@ -11,3 +11,8 @@ export PORT=5001
 
 ##forces test mode for dev
 export MOVIENIGHT_TEST=true
+
+## sadly, Postgres doesn't seem work correctly THROUGH qbs unless you have 
+## the PGSSLMODE set, the URL query param 'sslmode' DOES NOT work above.
+export PGUSER=postgres
+export PGSSLMODE=disable

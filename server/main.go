@@ -4,10 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	s5 "github.com/seven5/seven5"
+	//trick godeps to putting things in the Godep directory that the client
+	//side needs to compile
+	_ "github.com/gopherjs/gopherjs/js"
+	_ "github.com/gopherjs/gopherjs/nosync"
+	_ "github.com/gopherjs/jquery"
+	//this is one is actually used by the resulting binary
+	_ "github.com/lib/pq"
 
+	"github.com/iansmith/movienight/server/resource"
 	"github.com/iansmith/movienight/shared"
+	"github.com/iansmith/movienight/wire"
 )
 
 const (
@@ -56,12 +66,23 @@ func addResourcesAndAuth(conf *movienightConfig) {
 	conf.serveMux.HandleFunc(shared.URLGen.Me(), conf.pwd.MeHandler)
 	conf.serveMux.HandleFunc(shared.URLGen.Auth(), conf.pwd.AuthHandler)
 
+	store := conf.heroku.GetQbsStore()
+	//this is a GET to get the movie list
+	conf.base.ResourceSeparate("movie",
+		&wire.Movie{},
+		s5.QbsWrapIndex(&resource.MovieResource{}, store),
+		nil, //find
+		nil, //post
+		nil, //put
+		nil) //delete
+
 	//add static files
 	conf.serveMux.Handle("/", conf.matcher)
 }
 
 func main() {
 	log.Printf("[VERSION] %s", version)
+	log.Printf("[DATABASE] %s", os.Getenv("DATABASE_URL"))
 	conf := config()
 	addResourcesAndAuth(conf)
 

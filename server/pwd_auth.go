@@ -34,6 +34,8 @@ func (self *movienightValidatingSessionManager) Generate(uniqId string) (interfa
 	if err != nil {
 		return nil, err
 	}
+	defer q.Close()
+
 	var ur wire.UserRecord
 	ur.UserUdid = uniqId
 	if err := q.Find(&ur); err != nil {
