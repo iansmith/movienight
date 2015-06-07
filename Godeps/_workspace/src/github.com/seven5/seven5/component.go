@@ -478,14 +478,15 @@ func (self *SimpleComponentMatcher) ServeHTTP(w http.ResponseWriter, r *http.Req
 			if rtn.Session == nil {
 				sd, err := self.sm.Generate(rtn.UniqueId)
 				if err != nil {
-					log.Printf("[SERVE] ignoring error trying to reconstruct session (%s): %v", r.URL.Path, err)
-				} else {
-					session, err = self.sm.Assign(rtn.UniqueId, sd, time.Time{})
-					if err != nil {
-						log.Printf("[SERVE] error trying to assign session (%s): %v", r.URL.Path, err)
-						w.WriteHeader(http.StatusInternalServerError)
-						return
-					}
+					log.Printf("[SERVE] error trying to reconstruct session (%s): %v", r.URL.Path, err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+				session, err = self.sm.Assign(rtn.UniqueId, sd, time.Time{})
+				if err != nil {
+					log.Printf("[SERVE] error trying to assign session (%s): %v", r.URL.Path, err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
 				}
 			} else {
 				//this means that the Find() returned a session object inside rtn

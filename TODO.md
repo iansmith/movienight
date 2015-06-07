@@ -14,6 +14,8 @@
 	* The tables are in the DB for this
 	* Assumption: 1 up and down vote per user at a time, thus delete movie 
 
+* Log out
+	* Pieces of this are already in place (can use same machinery as log in)
 
 ### Nice to have
 

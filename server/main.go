@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -94,6 +95,9 @@ func movieproxy(w http.ResponseWriter, req *http.Request) {
 	q.Add("i", req.URL.Query().Get("i"))
 	q.Add("plot", req.URL.Query().Get("plot"))
 	q.Add("r", "json")
+	log.Printf("[MOVIEPROXY] proxying request for %s-> %v",
+		req.URL.Query().Get("i"), "http://www.omdbapi.com?"+q.Encode())
+
 	resp, err := http.Get("http://www.omdbapi.com?" + q.Encode())
 	if err != nil {
 		http.Error(w, "unable to reach omdb", http.StatusInternalServerError)
@@ -118,6 +122,37 @@ func movieproxy(w http.ResponseWriter, req *http.Request) {
 	//200
 }
 
+func posterproxy(w http.ResponseWriter, req *http.Request) {
+	omdb, err := url.Parse("http://img.omdbapi.com")
+	if err != nil {
+		http.Error(w, "bad url", http.StatusInternalServerError)
+		return
+	}
+	q := omdb.Query()
+	q.Add("i", req.URL.Query().Get("i"))
+	q.Add("apikey", os.Getenv("OMDB_API_KEY"))
+	log.Printf("[POSTERPROXY] proxying request for %s-> %v",
+		req.URL.Query().Get("i"), "http://img.omdbapi.com?"+q.Encode())
+	resp, err := http.Get("http://img.omdbapi.com?" + q.Encode())
+	if err != nil {
+		http.Error(w, "unable to reach omdb", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, resp.Status, resp.StatusCode)
+		return
+	}
+	for k, v := range resp.Header {
+		w.Header().Add(k, v[0])
+	}
+	_, err = io.Copy(w, resp.Body)
+	if err != nil {
+		log.Printf("[POSTERPROXY] failed to copy: %v", err)
+	}
+	//200
+}
+
 func main() {
 	log.Printf("[VERSION] %s", version)
 	log.Printf("[DATABASE] %s", os.Getenv("DATABASE_URL"))
@@ -132,6 +167,7 @@ func main() {
 		resp.Write([]byte(version))
 	})
 	conf.serveMux.HandleFunc("/movieproxy", movieproxy)
+	conf.serveMux.HandleFunc("/posterproxy", posterproxy)
 	//serve up the content forever
 	log.Printf("[SERVE] waiting on :%d", port)
 	log.Fatalf("%s", http.ListenAndServe(fmt.Sprintf(":%d", port), conf.serveMux))

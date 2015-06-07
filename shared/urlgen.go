@@ -10,6 +10,7 @@ type URLGenerator interface {
 	Login() string
 	NewMovie() string
 	MovieResource() string
+	Poster(id string) string
 }
 
 type urlGenImpl struct {
@@ -37,6 +38,10 @@ func (u *urlGenImpl) Me() string {
 
 func (u *urlGenImpl) Home() string {
 	return "/"
+}
+
+func (u *urlGenImpl) Poster(id string) string {
+	return "/posterproxy?i=" + id
 }
 
 func (u *urlGenImpl) Auth() string {

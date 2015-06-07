@@ -1,4 +1,5 @@
 // +build js
+
 package main
 
 import (
@@ -35,7 +36,7 @@ type movieModel struct {
 
 func newMovieModel(detail *wire.IMDBDetail, name string) *movieModel {
 	result := &movieModel{
-		posterURL: s5.NewStringSimple(detail.Poster),
+		posterURL: s5.NewStringSimple(shared.URLGen.Poster(detail.ImdbID)),
 		title:     s5.NewStringSimple(detail.Title),
 		plot:      s5.NewStringSimple(detail.Plot),
 		nominator: s5.NewStringSimple(name),
