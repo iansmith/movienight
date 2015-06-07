@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	s5 "github.com/seven5/seven5"
@@ -72,12 +74,48 @@ func addResourcesAndAuth(conf *movienightConfig) {
 		&wire.Movie{},
 		s5.QbsWrapIndex(&resource.MovieResource{}, store),
 		nil, //find
-		nil, //post
+		s5.QbsWrapPost(&resource.MovieResource{}, store), //post
 		nil, //put
 		nil) //delete
 
+	conf.serveMux.Dispatch("/rest/", conf.base)
+
 	//add static files
 	conf.serveMux.Handle("/", conf.matcher)
+}
+
+func movieproxy(w http.ResponseWriter, req *http.Request) {
+	omdb, err := url.Parse("http://www.omdbapi.com")
+	if err != nil {
+		http.Error(w, "bad url", http.StatusInternalServerError)
+		return
+	}
+	q := omdb.Query()
+	q.Add("i", req.URL.Query().Get("i"))
+	q.Add("plot", req.URL.Query().Get("plot"))
+	q.Add("r", "json")
+	resp, err := http.Get("http://www.omdbapi.com?" + q.Encode())
+	if err != nil {
+		http.Error(w, "unable to reach omdb", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, resp.Status, resp.StatusCode)
+		return
+	}
+	var detail wire.IMDBDetail
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(&detail); err != nil {
+		http.Error(w, "unable to decode body:"+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	enc := json.NewEncoder(w)
+	if err := enc.Encode(detail); err != nil {
+		http.Error(w, "unable to encode body:"+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//200
 }
 
 func main() {
@@ -93,6 +131,7 @@ func main() {
 	conf.serveMux.HandleFunc("/version", func(resp http.ResponseWriter, req *http.Request) {
 		resp.Write([]byte(version))
 	})
+	conf.serveMux.HandleFunc("/movieproxy", movieproxy)
 	//serve up the content forever
 	log.Printf("[SERVE] waiting on :%d", port)
 	log.Fatalf("%s", http.ListenAndServe(fmt.Sprintf(":%d", port), conf.serveMux))

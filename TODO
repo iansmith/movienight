@@ -11,4 +11,9 @@
 ** So you don't have to do create_acct for every person, maybe filter on email suffix?
 
 * Password reset cruft
+** The scaffolding is in pwd_auth.go for this already
+** DB tables are not there though
 
+* Ability to set a picture for your user profile
+** It's nice to convert it to a round image using the draw library of go
+** Maybe do it through github login?

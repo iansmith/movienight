@@ -1,3 +1,6 @@
+//these are data structures EXCHANGED between client and server and thus
+//are compiled on both sides of the wire.  thus must match exactly to the
+//tables created in migrate/migrate.go
 package wire
 
 import (
@@ -15,12 +18,9 @@ type UserRecord struct {
 
 type Movie struct {
 	Id          int64 `qbs:"pk"`
-	Title       string
-	ImdbUrl     string
-	Blurb       string
+	ImdbId      string
 	NominatedBy string `qbs:"fk:Nominator"`
 	Nominator   *UserRecord
-	PosterUrl   string
 }
 
 type Love struct {
@@ -51,4 +51,27 @@ type Comment struct {
 
 type SessionData struct {
 	LoggedInUser *UserRecord
+}
+
+type IMDBDetail struct {
+	Title      string
+	Year       string
+	Rated      string
+	Released   string
+	Runtime    string
+	Genre      string
+	Director   string
+	Writer     string
+	Actors     string
+	Plot       string
+	Language   string
+	Country    string
+	Awards     string
+	Poster     string
+	Metascore  string
+	ImdbRating string
+	ImdbVotes  string
+	ImdbID     string
+	Type       string
+	Response   string
 }

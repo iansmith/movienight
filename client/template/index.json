@@ -1,6 +1,4 @@
 {
-	"toprightText": "Log In &raquo;",
-	"toprightTarget":"login.html",
 	"title": "Movie Night",
 	"code": "index.js"
 }

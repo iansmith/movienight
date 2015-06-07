@@ -69,6 +69,9 @@ func (self *movienightValidatingSessionManager) ValidateCredentials(username, pw
 		//normal case of bad pwd
 		return "", nil, nil
 	}
+	if ur.Disabled {
+		return "", nil, nil
+	}
 	//return the udid as uniq part,then the rest of the object as user data
 	return ur.UserUdid, &wire.SessionData{&ur}, nil
 }

@@ -12,7 +12,9 @@ all: \
 	../static/en/web/index.js \
 	../static/en/web/index.html \
 	../static/en/web/login.js \
-	../static/en/web/login.html
+	../static/en/web/login.html \
+	../static/en/web/newmovie.js \
+	../static/en/web/newmovie.html
 
 clean:
 	rm -rf \
@@ -21,7 +23,9 @@ clean:
 	../static/en/web/index.js* \
 	../static/en/web/index.html \
 	../static/en/web/login.js* \
-	../static/en/web/login.html
+	../static/en/web/login.html \
+	../static/en/web/newmovie.js* \
+	../static/en/web/newmovie.html
 
 ### extra go files throw into to the dependencies, it compiles too fast to bother
 ### trying to make this exact
@@ -44,6 +48,9 @@ WITHDEPS:=$(shell cd ..; godep path)
 ../static/en/web/login.js: pages/login.go $(extras)
 	GOPATH=$(GOPATH):$(WITHDEPS) $(GOPHERJS) build $(GOPHERJSOPTS) --output=../static/en/web/login.js pages/login.go
 
+../static/en/web/newmovie.js: pages/newmovie.go $(extras)
+	GOPATH=$(GOPATH):$(WITHDEPS) $(GOPHERJS) build $(GOPHERJSOPTS) --output=../static/en/web/newmovie.js pages/newmovie.go
+
 
 ##
 ## HTML PAGES
@@ -56,3 +63,6 @@ WITHDEPS:=$(shell cd ..; godep path)
 
 ../static/en/web/login.html: template/login.html template/login.json template/support/*
 	pagegen --support=support --dir=template --start=login.html --json=login.json > ../static/en/web/login.html
+
+../static/en/web/newmovie.html: template/newmovie.html template/newmovie.json template/support/*
+	pagegen --support=support --dir=template --start=newmovie.html --json=newmovie.json > ../static/en/web/newmovie.html

@@ -54,11 +54,8 @@ func oneUp(tx *sql.Tx) error {
 	//
 	_, err = tx.Exec(`
         CREATE TABLE movie (
-       	id BIGINT PRIMARY KEY,
-        title VARCHAR(255),
-        imdb_url VARCHAR(1023),
-        poster_url VARCHAR(1023),
-        blurb TEXT,
+        id BIGSERIAL PRIMARY KEY,
+       	imdb_id VARCHAR(16),
         nominated_by VARCHAR(36) REFERENCES user_record(user_udid)
         )`)
 	if err != nil {
@@ -70,7 +67,7 @@ func oneUp(tx *sql.Tx) error {
 	_, err = tx.Exec(`
         CREATE TABLE love (
        	id BIGINT PRIMARY KEY,
-       	movie_id BIGINT REFERENCES movie(id),
+       	movie_id BIGSERIAL REFERENCES movie(id),
         user_udid VARCHAR(36) REFERENCES user_record(user_udid)
         )`)
 	if err != nil {
@@ -82,7 +79,7 @@ func oneUp(tx *sql.Tx) error {
 	_, err = tx.Exec(`
         CREATE TABLE hate (
        	id BIGINT PRIMARY KEY,
-       	movie_id BIGINT REFERENCES movie(id),
+       	movie_id BIGSERIAL REFERENCES movie(id),
         user_udid VARCHAR(36) REFERENCES user_record(user_udid)
         )`)
 	if err != nil {
@@ -95,7 +92,7 @@ func oneUp(tx *sql.Tx) error {
 	_, err = tx.Exec(`
         CREATE TABLE comment (
        	id BIGINT PRIMARY KEY,
-       	movie_id BIGINT REFERENCES movie(id),
+       	movie_id BIGSERIAL REFERENCES movie(id),
         user_udid VARCHAR(36) REFERENCES user_record(user_udid),
         comment TEXT,
         updated TIMESTAMP WITH TIME ZONE
