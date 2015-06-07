@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{{template "TITLE" .}}
+</head>
+<body>
+
+<div class="container">
+
+{{template "HEADER" .}}
+
+{{template "FEEDBACK"}}
+
+<div class="row">
+	<div style="text-align:center" class="col-md-offset-4 col-md-4">
+		<h3>Enter Movie ID</h3>
+	</div>
+</div>  <!--instructions row -->
+
+<div class="row">
+	<h4>&nbsp;</h4>
+</div>
+
+<div class="row">
+<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-offset-2 col-md-3">
+	    	<h5>IMDB Id</h5>
+		</div>
+		<div class="col-md-7">
+	    	<input type="text" size="10" maxlength="10" id="imdb_id"/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-offset-2 col-md-10">
+    		<span class="h6">http://www.imdb.com/title/</span><span class="h6" style="background-color:yellow">tt0085701</span><span class="h6">/?ref_=fn_al_tt_1</span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4" style="text-align:right">
+			<a id="submit" href="#" class="btn btn-primary btn-small btn-block">Create</a>
+		</div>
+	</div>
+</div>
+<div class="col-md-6">
+  	<span id="poster-parent">
+  		<img src="/fixed/questionmark.jpg" height="200" width="auto"/>
+  	</span><br/>
+  	<span id="poster-title"></span>
+</div>
+</div>
+
+
+{{template "GOBACK"}}
+
+</div> <!--outer container-->
+
+{{template "CODE" .}}
+
+</body>
+</html>
