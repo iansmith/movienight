@@ -8,3 +8,11 @@ div.vcenter {
   -webkit-align-items:center;
   align-items:center;
 }
+
+div.odd {
+	
+}
+
+div.even {
+	border: 1px solid #d8d8d8;
+}
