@@ -14,6 +14,11 @@
 	* The tables are in the DB for this
 	* Assumption: 1 up and down vote per user at a time, thus delete movie 
 
+* Movie detail page
+ 	* Clicking on the main page on poster, name, or plot should take you take you details page
+ 	* The page should let you post comments about the movie 
+ 	* DB stuff is started for comments, but nothing in UI
+ 	
 * Log out
 	* Pieces of this are already in place (can use same machinery as log in)
 
