@@ -37,14 +37,14 @@ func (n *newMoviePage) fetchMovie(id string) {
 	contentCh := make(chan interface{})
 	errCh := make(chan s5.AjaxError)
 
-	if err := s5.AjaxRawChannels(&detail, "", contentCh, errCh, "GET", "/movieproxy?i="+id, nil); err != nil {
+	if err := s5.AjaxRawChannels(&detail, "", contentCh, errCh, "GET", shared.URLGen.MovieDetails(id, false), nil); err != nil {
 		n.PageWithFeedback.DisplayFeedback("Unable to connect?", uilib.Danger)
 		return
 	}
 	go func() {
 		select {
 		case <-contentCh:
-			img := detail.Poster
+			img := shared.URLGen.Poster(detail.ImdbID)
 			if detail.Response == "False" {
 				img = "/fixed/questionmark.jpg"
 				n.havePoster.Set(false)

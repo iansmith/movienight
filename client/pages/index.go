@@ -77,7 +77,8 @@ func (m *mainPage) loggedIn(self *wire.UserRecord) {
 				detailCh := make(chan interface{})
 				detailErrCh := make(chan s5.AjaxError)
 
-				if err := s5.AjaxRawChannels(&detail, "", detailCh, detailErrCh, "GET", "/movieproxy?plot=full&i="+movie.ImdbId, nil); err != nil {
+				if err := s5.AjaxRawChannels(&detail, "", detailCh, detailErrCh, "GET",
+					shared.URLGen.MovieDetails(movie.ImdbId, true), nil); err != nil {
 					m.PageWithFeedback.DisplayFeedback("Unable to connect?", uilib.Danger)
 					return
 				}

@@ -11,6 +11,7 @@ type URLGenerator interface {
 	NewMovie() string
 	MovieResource() string
 	Poster(id string) string
+	MovieDetails(id string, fullPlot bool) string
 }
 
 type urlGenImpl struct {
@@ -42,6 +43,13 @@ func (u *urlGenImpl) Home() string {
 
 func (u *urlGenImpl) Poster(id string) string {
 	return "/posterproxy?i=" + id
+}
+func (u *urlGenImpl) MovieDetails(id string, fullPlot bool) string {
+	plot := "short"
+	if fullPlot {
+		plot = "full"
+	}
+	return "/movieproxy?i=" + id + "&plot=" + plot
 }
 
 func (u *urlGenImpl) Auth() string {
