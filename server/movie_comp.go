@@ -12,7 +12,7 @@ type movieComponent struct {
 }
 
 func (mc *movieComponent) Page(pb s5.PBundle, path []string, slashTerminated bool) s5.ComponentResult {
-	if len(path) == 0 {
+	if len(path) != 1 {
 		return s5.ComponentResult{
 			Status:  http.StatusNotFound,
 			Message: "not found",
@@ -21,8 +21,9 @@ func (mc *movieComponent) Page(pb s5.PBundle, path []string, slashTerminated boo
 
 	return s5.ComponentResult{
 		Status: http.StatusOK,
-		Path:   "/" + filepath.Join(mc.UrlPrefix(), path[0]),
+		Path:   "/" + filepath.Join("moviedetail.html"),
 	}
+
 }
 
 //part of the fixed URL space, not including preceding slash

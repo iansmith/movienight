@@ -32,14 +32,16 @@ type movieModel struct {
 	title     s5.StringAttribute
 	plot      s5.StringAttribute
 	nominator s5.StringAttribute
+	link      s5.StringAttribute
 }
 
 func newMovieModel(detail *wire.IMDBDetail, name string) *movieModel {
 	result := &movieModel{
-		posterURL: s5.NewStringSimple(shared.URLGen.Poster(detail.ImdbID)),
+		posterURL: s5.NewStringSimple(shared.URLGen.ProxyPoster(detail.ImdbID)),
 		title:     s5.NewStringSimple(detail.Title),
 		plot:      s5.NewStringSimple(detail.Plot),
 		nominator: s5.NewStringSimple(name),
+		link:      s5.NewStringSimple(shared.URLGen.DetailPage(detail.ImdbID)),
 	}
 	result.ModelName = s5.NewModelName(result)
 	return result
@@ -59,14 +61,7 @@ type mainPage struct {
 	*s5.Collection
 }
 
-func (m *mainPage) loggedIn(self *wire.UserRecord) {
-	loginParent.Dom().SetText(self.FirstName)
-	newMovie.Dom().SetText("New Movie")
-	newMovie.Dom().SetCss("cursor", "pointer")
-	newMovie.Dom().On(s5.CLICK, func(e jquery.Event) {
-		e.PreventDefault()
-		uilib.SetNewPage(shared.URLGen.NewMovie())
-	})
+func (m *mainPage) pullMovies() {
 	var movies []*wire.Movie
 	content, errCh := s5.AjaxIndex(&movies, shared.URLGen.MovieResource())
 	go func() {
@@ -76,31 +71,40 @@ func (m *mainPage) loggedIn(self *wire.UserRecord) {
 				var detail wire.IMDBDetail
 				detailCh := make(chan interface{})
 				detailErrCh := make(chan s5.AjaxError)
-
 				if err := s5.AjaxRawChannels(&detail, "", detailCh, detailErrCh, "GET",
-					shared.URLGen.MovieDetails(movie.ImdbId, true), nil); err != nil {
+					shared.URLGen.ProxyMovie(movie.ImdbId, false), nil); err != nil {
 					m.PageWithFeedback.DisplayFeedback("Unable to connect?", uilib.Danger)
 					return
 				}
-				go func() {
+				go func(weird *wire.Movie) {
 					select {
 					case <-detailCh:
 						if detail.Response == "False" {
 							return
 						}
-						model := newMovieModel(&detail, movie.Nominator.FirstName+" "+movie.Nominator.LastName)
+						model := newMovieModel(&detail, weird.Nominator.FirstName+" "+weird.Nominator.LastName)
 						m.Collection.Add(model)
 					case err := <-detailErrCh:
 						m.PageWithFeedback.DisplayFeedback(err.Message, uilib.Danger)
 					}
-				}()
+				}(movie)
 
 			}
 		case err := <-errCh:
 			m.PageWithFeedback.DisplayFeedback(err.Message, uilib.Danger)
 		}
 	}()
+}
 
+func (m *mainPage) loggedIn(self *wire.UserRecord) {
+	loginParent.Dom().SetText(self.FirstName)
+	newMovie.Dom().SetText("New Movie")
+	newMovie.Dom().SetCss("cursor", "pointer")
+	newMovie.Dom().On(s5.CLICK, func(e jquery.Event) {
+		e.PreventDefault()
+		uilib.SetNewPage(shared.URLGen.NewMovie())
+	})
+	m.pullMovies()
 }
 
 func (m *mainPage) notLoggedIn(code int, message string) {
@@ -113,6 +117,7 @@ func (m *mainPage) notLoggedIn(code int, message string) {
 	if code != http.StatusUnauthorized {
 		m.PageWithFeedback.DisplayFeedback(message, uilib.Danger)
 	}
+	m.pullMovies()
 }
 
 func (m *mainPage) Start() {
@@ -165,9 +170,12 @@ func (self *mainPage) Add(length int, newObj s5.Model) {
 				s5.TextEqual(model.nominator),
 			),
 		),
+		s5.Event(
+			s5.CLICK, func(jquery.Event) {
+				uilib.SetNewPage(model.link.Value())
+			}),
 	).Build()
 	movieParent.Dom().Append(tree)
-	print("add reached", length, model)
 }
 func (self *mainPage) Remove(ignored int, oldObj s5.Model) {
 	panic("remove not implemented")

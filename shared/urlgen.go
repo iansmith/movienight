@@ -10,8 +10,9 @@ type URLGenerator interface {
 	Login() string
 	NewMovie() string
 	MovieResource() string
-	Poster(id string) string
-	MovieDetails(id string, fullPlot bool) string
+	ProxyPoster(id string) string
+	ProxyMovie(id string, fullPlot bool) string
+	DetailPage(id string) string
 }
 
 type urlGenImpl struct {
@@ -29,6 +30,9 @@ func (u *urlGenImpl) Login() string {
 func (u *urlGenImpl) MovieResource() string {
 	return "/rest/movie"
 }
+func (u *urlGenImpl) DetailPage(id string) string {
+	return "/movie/" + id
+}
 
 func (u *urlGenImpl) NewMovie() string {
 	return "/newmovie.html"
@@ -41,10 +45,10 @@ func (u *urlGenImpl) Home() string {
 	return "/"
 }
 
-func (u *urlGenImpl) Poster(id string) string {
+func (u *urlGenImpl) ProxyPoster(id string) string {
 	return "/posterproxy?i=" + id
 }
-func (u *urlGenImpl) MovieDetails(id string, fullPlot bool) string {
+func (u *urlGenImpl) ProxyMovie(id string, fullPlot bool) string {
 	plot := "short"
 	if fullPlot {
 		plot = "full"

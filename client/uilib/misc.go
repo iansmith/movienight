@@ -15,6 +15,9 @@ func (self *PageWithFeedback) HideFeedback() {
 func SetNewPage(url string) {
 	js.Global.Get("document").Get("location").Set("href", url)
 }
+func CurrentURLPath() string {
+	return js.Global.Get("document").Get("location").Get("pathname").String()
+}
 
 //
 // UTILITY JQUERY ANIMATIONS
